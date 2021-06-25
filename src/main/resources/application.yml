@@ -6,16 +6,31 @@ spring:
       name: GATEWAY-SERVICE
    cloud:
       gateway:
+         # specify routes
          routes:
             - id: order-service
               uri: lb://ORDER-SERVICE
               predicates:
                  - Path=/order/**
+              #circuit breaker
+              filters:
+                 - name: CircuitBreaker
+                   args:
+                      name: order-service
+                      fallbackuri: forward:/orderFallback  # uri provided in Fallback contriller
+
             - id: payment-service
               uri: lb://PAYMENT-SERVICE
               predicates:
                  - Path=/payment/**
+              #circuit breaker
+              filters:
+                 - name: CircuitBreaker
+                   args:
+                      name: payment-service   # it can be anything
+                      fallbackuri: forward:/paymentFallback  # uri provided in Fallback contriller
 
+# eureka service registry as eureka client
 eureka:
    client:
       register-with-eureka: true
@@ -24,3 +39,18 @@ eureka:
          default-zone: http://localhost:8761/eureka
    instance: localhost 
 
+
+# hystrix circuit-breaker configuration
+management:
+   endpoints:
+      web:
+         exposure:
+            include: hystrix.stream
+            
+hystrix:
+   command:
+      fallbackcmd:
+         execution:
+            isolation:
+               thread:
+                  timeoutInMilliseconds: 5000
