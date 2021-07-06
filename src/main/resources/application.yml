@@ -31,13 +31,14 @@ spring:
                       fallbackuri: forward:/paymentFallback  # uri provided in Fallback contriller
 
 # eureka service registry as eureka client
-eureka:
-   client:
-      register-with-eureka: true
-      fetch-registry: true
-      service-url:
-         default-zone: http://localhost:8761/eureka
-   instance: localhost 
+# moved to jt-config-properties
+# eureka:
+#    client:
+#       register-with-eureka: true
+#       fetch-registry: true
+#       service-url:
+#          default-zone: http://localhost:8761/eureka
+#    instance: localhost 
 
 
 # hystrix circuit-breaker configuration
